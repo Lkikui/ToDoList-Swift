@@ -5,13 +5,11 @@
 //  Created by Lisa Ryland on 1/22/18.
 //  Copyright © 2018 Lisa Ryland. All rights reserved.
 //
-
 import UIKit
 
 class addItemVC: UIViewController {
     
     weak var delegate: AddItemVCDelegate?
-    var indexPath: NSIndexPath?
     
     //MARK: Form fields
     @IBOutlet weak var itemTitleTextField: UITextField!
@@ -31,14 +29,9 @@ class addItemVC: UIViewController {
         let itemNotes = itemNotesTextField.text!
         let dueDate = dueDatePicker.date
         
-        //extracting only date from datepicker
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "MM/dd/yy"
-//        let dateString = dateFormatter.string(from: dueDatePicker.date)
-//        let dueDate = dateString
-        delegate?.itemSaved(by: self, with: itemTitle, itemNotes: itemNotes, dueDate: dueDate, at: indexPath)
+        delegate?.itemSaved(by: self, with: itemTitle, itemNotes: itemNotes, dueDate: dueDate)
         
-//        func itemSaved(by controller: addItemVC, with itemTitle: String, itemNotes: String, dueDate: Date, at indexPath: NSIndexPath?)
+        //        func itemSaved(by controller: addItemVC, with itemTitle: String, itemNotes: String, dueDate: Date, at indexPath: NSIndexPath?)
     }
     
     
@@ -46,9 +39,9 @@ class addItemVC: UIViewController {
         super.viewDidLoad()
         
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-
+    
 }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+
 class ItemCell: UITableViewCell {
     @IBOutlet weak var itemTitleLabel: UILabel!
     @IBOutlet weak var itemNotesLabel: UILabel!
