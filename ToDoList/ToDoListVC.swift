@@ -22,7 +22,7 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
     
     //MARK: set data to display in cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell") as! ItemCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell", for: indexPath) as! ItemCell
         
         let item = items[indexPath.row]
         
@@ -35,8 +35,24 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
         let dateString = dateFormatter.string(from: item.dueDate!)
         cell.dueDateLabel?.text = dateString
         
+        //checkmark toggle display
+        
+        
         // return cell so that Table View knows what to draw in each row
         return cell
+    }
+    
+    // toggle checkmark when cell is tapped
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        if let cell = tableView.cellForRow(at: indexPath as IndexPath) {
+            if cell.accessoryType == .checkmark {
+                cell.accessoryType = .none
+            }
+            else {
+                cell.accessoryType = .checkmark
+            }
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -82,8 +98,8 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.tableView.rowHeight = 100
         fetchAllItems()
-        
     }
     
     override func didReceiveMemoryWarning() {

@@ -30,8 +30,6 @@ class addItemVC: UIViewController {
         let dueDate = dueDatePicker.date
         
         delegate?.itemSaved(by: self, with: itemTitle, itemNotes: itemNotes, dueDate: dueDate)
-        
-        //        func itemSaved(by controller: addItemVC, with itemTitle: String, itemNotes: String, dueDate: Date, at indexPath: NSIndexPath?)
     }
     
     
