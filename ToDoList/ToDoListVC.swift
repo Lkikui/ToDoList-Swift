@@ -51,15 +51,8 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let taskObject = self.items[indexPath.row]
         
-        if taskObject.isCompleted == false {
-            taskObject.isCompleted = true
-            print("Complete!")
-        }
-        else {
-            taskObject.isCompleted = false
-            print("Not done yet")
-        }
-        
+        taskObject.isCompleted = !taskObject.isCompleted // condensed toggle
+    
         do {
             try managedObjectContext.save()
         } catch let error as NSError {
@@ -108,7 +101,11 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
         }
         
         items.append(item)
-        tableView.reloadData()
+        
+        
+        let indexPath = IndexPath(row: items.count-1, section: 0) // both rows and sections start with an index of 0
+        tableView.insertRows(at: [indexPath], with: .bottom)      // no need to reload each time
+//        tableView.reloadData()
         dismiss(animated: true, completion: nil)
     }
     
