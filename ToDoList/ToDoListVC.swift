@@ -23,8 +23,8 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
     //MARK: set data to display in cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell", for: indexPath) as! ItemCell
-        
         let item = items[indexPath.row]
+        let taskStatus = item.isCompleted
         
         cell.itemTitleLabel?.text = item.itemTitle!
         cell.itemNotesLabel?.text = item.itemNotes!
@@ -35,31 +35,46 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
         let dateString = dateFormatter.string(from: item.dueDate!)
         cell.dueDateLabel?.text = dateString
         
-        //checkmark toggle display
-        
+        //toggle checkmark display
+        if taskStatus {
+            cell.accessoryType = .checkmark
+        }
+        else {
+            cell.accessoryType = .none
+        }
         
         // return cell so that Table View knows what to draw in each row
         return cell
     }
     
-    // toggle checkmark when cell is tapped
+    // toggle isCompleted boolean on cell click
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        if let cell = tableView.cellForRow(at: indexPath as IndexPath) {
-            if cell.accessoryType == .checkmark {
-                cell.accessoryType = .none
-            }
-            else {
-                cell.accessoryType = .checkmark
-            }
+        let taskObject = self.items[indexPath.row]
+        
+        if taskObject.isCompleted == false {
+            taskObject.isCompleted = true
+            print("Complete!")
         }
+        else {
+            taskObject.isCompleted = false
+            print("Not done yet")
+        }
+        
+        do {
+            try managedObjectContext.save()
+        } catch let error as NSError {
+            print("Cannot save object: \(error), \(error.localizedDescription)")
+        }
+        
+        tableView.deselectRow(at: indexPath, animated: false)
+        tableView.reloadRows(at: [indexPath], with: .none)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let navigationController = segue.destination as! UINavigationController
         let addItemVCController = navigationController.topViewController as! addItemVC
         addItemVCController.delegate = self
-        
+
         // if editing, send along the index path to additemVC
     }
     
@@ -84,6 +99,7 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
         item.dueDate = dueDate
         item.itemNotes = itemNotes
         item.itemTitle = itemTitle
+        item.isCompleted = false
         
         do {
             try managedObjectContext.save()
