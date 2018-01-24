@@ -8,3 +8,5 @@ Features:
   - reformatted date for readability
 - checkmark toggle to check off to do list items once completed
 - persistence of checkmark toggle status
+- edit list item
+- delete list item by swiping left
