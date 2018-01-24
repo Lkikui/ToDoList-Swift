@@ -8,6 +8,6 @@
 import UIKit
 
 protocol AddItemVCDelegate: class {
-    func itemSaved(by controller: addItemVC, with itemTitle: String, itemNotes: String, dueDate: Date)
+    func itemSaved(by controller: addItemVC, with itemTitle: String, itemNotes: String, dueDate: Date, at indexPath: IndexPath?)
     func cancelButtonPressed(by controller: addItemVC)
 }

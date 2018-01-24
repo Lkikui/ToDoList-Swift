@@ -10,6 +10,11 @@ import UIKit
 class addItemVC: UIViewController {
     
     weak var delegate: AddItemVCDelegate?
+    var itemTitle: String?
+    var itemNote: String?
+    var dueDate: Date?
+    var indexPath: IndexPath?
+    
     
     //MARK: Form fields
     @IBOutlet weak var itemTitleTextField: UITextField!
@@ -29,13 +34,14 @@ class addItemVC: UIViewController {
         let itemNotes = itemNotesTextField.text!
         let dueDate = dueDatePicker.date
         
-        delegate?.itemSaved(by: self, with: itemTitle, itemNotes: itemNotes, dueDate: dueDate)
+        delegate?.itemSaved(by: self, with: itemTitle, itemNotes: itemNotes, dueDate: dueDate, at: indexPath)
     }
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        itemTitleTextField.text = itemTitle
+        itemNotesTextField.text = itemNote
     }
     
     override func didReceiveMemoryWarning() {

@@ -37,10 +37,10 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
         
         //toggle checkmark display
         if taskStatus {
-            cell.accessoryType = .checkmark
+            cell.textLabel?.text = "\u{2705}"
         }
         else {
-            cell.accessoryType = .none
+            cell.textLabel?.text = "\u{2B1C}"
         }
         
         // return cell so that Table View knows what to draw in each row
@@ -69,6 +69,13 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
         addItemVCController.delegate = self
 
         // if editing, send along the index path to additemVC
+        if let indexPath = sender as? IndexPath {
+            let item = items[indexPath.row]
+            addItemVCController.itemTitle = item.itemTitle!
+            addItemVCController.itemNote = item.itemNotes!
+            addItemVCController.dueDate = item.dueDate!
+            addItemVCController.indexPath = indexPath
+        }
     }
     
     func fetchAllItems() {
@@ -86,13 +93,48 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
     }
     
     //MARK: When "Add Item" button is pressed
-    func itemSaved(by controller: addItemVC, with itemTitle: String, itemNotes: String, dueDate: Date) {
+    func itemSaved(by controller: addItemVC, with itemTitle: String, itemNotes: String, dueDate: Date, at indexPath: IndexPath?) {
 
-        let item = NSEntityDescription.insertNewObject(forEntityName: "ToDoListItem", into: managedObjectContext) as! ToDoListItem
-        item.dueDate = dueDate
-        item.itemNotes = itemNotes
-        item.itemTitle = itemTitle
-        item.isCompleted = false
+        // if indexPath, edit item
+        if let ip = indexPath {
+            items[ip.row].itemTitle = itemTitle
+            items[ip.row].itemNotes = itemNotes
+            items[ip.row].dueDate = dueDate
+        // if adding new, append to [item]
+            
+            tableView.reloadRows(at: [ip], with: .none)
+        } else {
+            let item = NSEntityDescription.insertNewObject(forEntityName: "ToDoListItem", into: managedObjectContext) as! ToDoListItem
+            item.dueDate = dueDate
+            item.itemNotes = itemNotes
+            item.itemTitle = itemTitle
+            item.isCompleted = false
+            items.append(item)
+            
+            let indexPath = IndexPath(row: items.count-1, section: 0) // both rows and sections start with an index of 0
+            tableView.insertRows(at: [indexPath], with: .bottom) // no need to reload each time
+        }
+        
+        do {
+            try managedObjectContext.save()
+        } catch {
+            print("\(error)")
+        }
+
+        dismiss(animated: true, completion: nil)
+    }
+    
+    //MARK: Edit item when accessory button is tapped
+    override func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
+        performSegue(withIdentifier: "listToFormSegue", sender: indexPath)
+    }
+    
+    
+    
+    //MARK: Remove item by swiping left
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        let item = items[indexPath.row]
+        managedObjectContext.delete(item)
         
         do {
             try managedObjectContext.save()
@@ -100,19 +142,16 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
             print("\(error)")
         }
         
-        items.append(item)
-        
-        
-        let indexPath = IndexPath(row: items.count-1, section: 0) // both rows and sections start with an index of 0
-        tableView.insertRows(at: [indexPath], with: .bottom)      // no need to reload each time
-//        tableView.reloadData()
-        dismiss(animated: true, completion: nil)
+        items.remove(at: indexPath.row)
+        tableView.reloadData()
     }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tableView.rowHeight = 100
+        self.tableView.rowHeight = 80
         fetchAllItems()
+        
     }
     
     override func didReceiveMemoryWarning() {
