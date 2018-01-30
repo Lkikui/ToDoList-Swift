@@ -84,7 +84,7 @@
             </objects>
             <point key="canvasLocation" x="180" y="-83.208395802098963"/>
         </scene>
-        <!--Add Item-->
+        <!--Item-->
         <scene sceneID="KgF-PA-5Xm">
             <objects>
                 <viewController id="JFp-1L-4ZW" customClass="addItemVC" customModule="ToDoList" customModuleProvider="target" sceneMemberID="viewController">
@@ -120,7 +120,7 @@
                                 <rect key="frame" x="20" y="556" width="335" height="48"/>
                                 <color key="backgroundColor" red="0.0" green="0.32852089410000002" blue="0.57488495110000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="30"/>
-                                <state key="normal" title="Add Item">
+                                <state key="normal" title="Submit">
                                     <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
@@ -149,7 +149,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Fvq-1T-Qzj"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Add Item" id="UOb-kw-dQX">
+                    <navigationItem key="navigationItem" title="Item" id="UOb-kw-dQX">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="5e3-WS-ooq">
                             <connections>
                                 <action selector="cancelButtonPressed:" destination="JFp-1L-4ZW" id="qTS-td-828"/>
@@ -183,7 +183,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ILb-iz-vyi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-20.800000000000001" y="-82.758620689655174"/>
+            <point key="canvasLocation" x="-548" y="-83"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="ndu-dL-K4x">

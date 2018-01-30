@@ -35,13 +35,19 @@ class addItemVC: UIViewController {
         let dueDate = dueDatePicker.date
         
         delegate?.itemSaved(by: self, with: itemTitle, itemNotes: itemNotes, dueDate: dueDate, at: indexPath)
+        
     }
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         itemTitleTextField.text = itemTitle
         itemNotesTextField.text = itemNote
+        
+        if let dueDate = dueDate {
+            dueDatePicker.date = dueDate
+        }
     }
     
     override func didReceiveMemoryWarning() {

@@ -59,8 +59,7 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
             print("Cannot save object: \(error), \(error.localizedDescription)")
         }
         
-        tableView.deselectRow(at: indexPath, animated: false)
-        tableView.reloadRows(at: [indexPath], with: .none)
+        fetchAllItems()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -69,6 +68,7 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
         addItemVCController.delegate = self
 
         // if editing, send along the index path to additemVC
+        
         if let indexPath = sender as? IndexPath {
             let item = items[indexPath.row]
             addItemVCController.itemTitle = item.itemTitle!
@@ -86,6 +86,7 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
         } catch {
             print("\(error)")
         }
+        tableView.reloadData()
     }
     
     func cancelButtonPressed(by controller: addItemVC) {
@@ -94,32 +95,28 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
     
     //MARK: When "Add Item" button is pressed
     func itemSaved(by controller: addItemVC, with itemTitle: String, itemNotes: String, dueDate: Date, at indexPath: IndexPath?) {
-
+        let item: ToDoListItem
         // if indexPath, edit item
         if let ip = indexPath {
-            items[ip.row].itemTitle = itemTitle
-            items[ip.row].itemNotes = itemNotes
-            items[ip.row].dueDate = dueDate
-        // if adding new, append to [item]
-            
-            tableView.reloadRows(at: [ip], with: .none)
+            item = items[ip.row]
+        
+        // add new item
         } else {
-            let item = NSEntityDescription.insertNewObject(forEntityName: "ToDoListItem", into: managedObjectContext) as! ToDoListItem
-            item.dueDate = dueDate
-            item.itemNotes = itemNotes
-            item.itemTitle = itemTitle
+            item = NSEntityDescription.insertNewObject(forEntityName: "ToDoListItem", into: managedObjectContext) as! ToDoListItem
             item.isCompleted = false
-            items.append(item)
-            
-            let indexPath = IndexPath(row: items.count-1, section: 0) // both rows and sections start with an index of 0
-            tableView.insertRows(at: [indexPath], with: .bottom) // no need to reload each time
         }
+        
+        item.dueDate = dueDate
+        item.itemNotes = itemNotes
+        item.itemTitle = itemTitle
         
         do {
             try managedObjectContext.save()
         } catch {
             print("\(error)")
         }
+        
+        fetchAllItems()
 
         dismiss(animated: true, completion: nil)
     }
@@ -134,6 +131,7 @@ class ToDoListVC: UITableViewController, AddItemVCDelegate {
     //MARK: Remove item by swiping left
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         let item = items[indexPath.row]
+        
         managedObjectContext.delete(item)
         
         do {
